@@ -17,7 +17,7 @@ def generate_spark_dataframe_from_file(spark, file_path, header_identifier):
     for line in searched_values.split("\n"):
         if line.find("=") != -1:
             breaked_line = line.split("=")
-            values.append([breaked_line[0].strip(" '"), breaked_line[1].strip(" '")])
+            values.append([breaked_line[0].strip(" '\t"), breaked_line[1].strip(" '\t")])
 
         values_dataframe = spark.createDataFrame(values, schema)
 
