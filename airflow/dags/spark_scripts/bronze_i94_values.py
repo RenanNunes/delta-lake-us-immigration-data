@@ -33,24 +33,24 @@ if __name__ == "__main__":
     I94cit_res_df = generate_spark_dataframe_from_file(
         spark, "s3a://landing-layer-udacity-nd/I94_SAS_Labels_Descriptions.SAS", "I94CIT")
     print(I94cit_res_df.printSchema())
-    I94cit_res_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/I94cit_res")
+    I94cit_res_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/i94cit_res")
     
     I94port_df = generate_spark_dataframe_from_file(
         spark, "s3a://landing-layer-udacity-nd/I94_SAS_Labels_Descriptions.SAS", "I94PORT")
     print(I94port_df.printSchema())
-    I94port_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/I94port")
+    I94port_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/i94port")
 
     I94mode_df = generate_spark_dataframe_from_file(
         spark, "s3a://landing-layer-udacity-nd/I94_SAS_Labels_Descriptions.SAS", "I94MODE")
     print(I94mode_df.printSchema())
-    I94mode_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/I94mode")
+    I94mode_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/i94mode")
 
     I94addr_df = generate_spark_dataframe_from_file(
         spark, "s3a://landing-layer-udacity-nd/I94_SAS_Labels_Descriptions.SAS", "I94ADDR")
     print(I94addr_df.printSchema())
-    I94addr_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/I94addr")
+    I94addr_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/i94addr")
 
     I94visa_df = generate_spark_dataframe_from_file(
         spark, "s3a://landing-layer-udacity-nd/I94_SAS_Labels_Descriptions.SAS", "I94VISA")
     print(I94visa_df.printSchema())
-    I94visa_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/I94visa")
+    I94visa_df.write.format("delta").mode("overwrite").save("s3a://bronze-layer-udacity-nd/i94visa")
