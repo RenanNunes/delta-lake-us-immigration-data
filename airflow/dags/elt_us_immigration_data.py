@@ -34,7 +34,7 @@ with DAG(
         release_label="emr-6.10.0",
         config={
             "name": "sample-job",
-            },
+        },
     )
 
     application_id = create_app.output
@@ -52,12 +52,14 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/bronze_airports.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
-
 
         bronze_cities = EmrServerlessStartJobOperator(
             task_id="bronze_cities",
@@ -66,12 +68,14 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/bronze_cities.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
-
 
         bronze_immigration = EmrServerlessStartJobOperator(
             task_id="bronze_immigration",
@@ -80,12 +84,14 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/bronze_immigration.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
-
 
         bronze_temperatures = EmrServerlessStartJobOperator(
             task_id="bronze_temperatures",
@@ -94,12 +100,16 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/bronze_temperatures.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar --conf spark.sql.parquet.int96RebaseModeInWrite=CORRECTED"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                        " --conf"
+                        " spark.sql.parquet.int96RebaseModeInWrite=CORRECTED"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
-
 
         bronze_i94_values = EmrServerlessStartJobOperator(
             task_id="bronze_i94_values",
@@ -108,7 +118,10 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/bronze_i94_values.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
@@ -121,13 +134,26 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/bronze_quality_check.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
-        
-        bronze_layer_start >> [bronze_airports, bronze_cities, bronze_immigration, bronze_temperatures, bronze_i94_values] >> bronze_quality_check
+
+        (
+            bronze_layer_start
+            >> [
+                bronze_airports,
+                bronze_cities,
+                bronze_immigration,
+                bronze_temperatures,
+                bronze_i94_values,
+            ]
+            >> bronze_quality_check
+        )
 
     with TaskGroup(group_id="silver_layer") as silver_layer:
         # Silver layer
@@ -143,12 +169,14 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/silver_airports.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
-
 
         silver_cities = EmrServerlessStartJobOperator(
             task_id="silver_cities",
@@ -157,12 +185,14 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/silver_cities.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
-
 
         silver_immigration = EmrServerlessStartJobOperator(
             task_id="silver_immigration",
@@ -171,12 +201,14 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/silver_immigration.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
-
 
         silver_temperatures = EmrServerlessStartJobOperator(
             task_id="silver_temperatures",
@@ -185,7 +217,12 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/silver_temperatures.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar --conf spark.sql.parquet.int96RebaseModeInWrite=CORRECTED"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                        " --conf"
+                        " spark.sql.parquet.int96RebaseModeInWrite=CORRECTED"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
@@ -198,13 +235,25 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/silver_quality_check.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
 
-        silver_layer_start >> [silver_airports, silver_cities, silver_immigration, silver_temperatures] >> silver_quality_check
+        (
+            silver_layer_start
+            >> [
+                silver_airports,
+                silver_cities,
+                silver_immigration,
+                silver_temperatures,
+            ]
+            >> silver_quality_check
+        )
 
     with TaskGroup(group_id="gold_layer") as gold_layer:
         # Gold layer
@@ -220,7 +269,12 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/gold_immigration_data.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar --conf spark.sql.parquet.int96RebaseModeInWrite=CORRECTED"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                        " --conf"
+                        " spark.sql.parquet.int96RebaseModeInWrite=CORRECTED"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
@@ -233,14 +287,16 @@ with DAG(
             job_driver={
                 "sparkSubmit": {
                     "entryPoint": "s3://utils-bucket-udacity/spark_files/gold_quality_check.py",
-                    "sparkSubmitParameters": "--conf spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    "sparkSubmitParameters": (
+                        "--conf"
+                        " spark.jars=s3://utils-bucket-udacity/jars/delta-core_2.12-2.2.0.jar,s3://utils-bucket-udacity/jars/delta-storage-2.2.0.jar"
+                    ),
                 }
             },
             configuration_overrides=DEFAULT_MONITORING_CONFIG,
         )
 
         gold_layer_start >> gold_immigration_data >> gold_quality_check
-
 
     delete_app = EmrServerlessDeleteApplicationOperator(
         task_id="delete_app",
