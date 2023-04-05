@@ -1,5 +1,5 @@
 # delta-lake-us-immigration-data
-Repository for udacity capstone project. It uses Airflow, Delta Lake, S3 and python/pyspark to create bronze, silver and gold tables to analyse immigration data alongside temperature, demographic and airport code data. Generating a better quantitative understanding of arrivals across the years in the USA.
+Repository for udacity capstone project. It uses Airflow, Delta Lake, S3, AWS EMR Serverless and python/pyspark to create bronze, silver and gold tables to analyse immigration data alongside temperature, demographic and airport code data. Generating a better quantitative understanding of arrivals across the years in the USA.
 
 # Architecture
 ## Technologies
