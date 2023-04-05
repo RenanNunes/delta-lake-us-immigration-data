@@ -96,7 +96,7 @@ Create the 5 buckets described before and populate the:
 - utils bucket with delta-core jar (example: `delta-core_2.12-2.2.0.jar`), delta storage jar (example: `delta-storage-2.2.0.jar`) inside a `jars` folder, with spark files (that are inside `airflow/dags/spark_files`) inside a `spark_files` folder
 - landing bucket with not zipped files that are inside `data` and with the zipped content after decompression
 
-## Run docker compose
+## Run docker compose (inside airflow folder)
 For the first run:
 ```
 docker compose up airflow-init
