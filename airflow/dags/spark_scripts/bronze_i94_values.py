@@ -1,7 +1,19 @@
 import pyspark
 from pyspark.sql.types import StructType, StructField, StringType
+from pyspark.sql import DataFrame
 
-def generate_spark_dataframe_from_file(spark, file_path, header_identifier):
+def generate_spark_dataframe_from_file(spark, file_path:str, header_identifier:str) -> DataFrame:
+    """Generate spark dataframe extrating some content related to the header_identifier
+    of a file
+
+    Args:
+        spark: spark instance
+        file_path (str): path to file to extract data
+        header_identifier (str): identifier to extract data related to
+
+    Returns:
+        DataFrame: spark dataframe
+    """
     file_content = "\n".join(spark.sparkContext.textFile(file_path).collect())
     start_of_values = file_content.index(header_identifier)
     end_of_values = file_content.index(";", start_of_values)

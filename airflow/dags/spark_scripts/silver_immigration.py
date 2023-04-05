@@ -1,4 +1,6 @@
 import pyspark
+from pyspark.sql import functions as F
+
 
 if __name__ == "__main__":
     spark = pyspark.sql.SparkSession.builder.appName("MyApp")\
@@ -29,4 +31,11 @@ if __name__ == "__main__":
         .join(i94visa_df, i94_immigration_df.i94visa == i94visa_df.code, "inner")\
         .drop("code").withColumnRenamed("value", "i94visa_value")
     print(silver_i94_immigration_df.printSchema())
+    # format city and state application
+    silver_i94_immigration_df = silver_i94_immigration_df.withColumn("application_city", F.substring_index(F.col("i94port_value"), ', ', 1))\
+                                 .withColumn("application_state", F.substring_index(F.col("i94port_value"), ', ', -1))
+    # format departure and arrival date
+    silver_i94_immigration_df = silver_i94_immigration_df.withColumn('arrdate', F.date_add(F.to_date(F.lit("1960-01-01")), F.col("arrdate").cast("int")))\
+               .withColumn('depdate', F.date_add(F.to_date(F.lit("1960-01-01")), F.col("depdate").cast("int")))
+    # upload silver table
     silver_i94_immigration_df.write.format("delta").mode("overwrite").save("s3a://silver-layer-udacity-nd/i94_immigration")
