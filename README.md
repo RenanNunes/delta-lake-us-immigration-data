@@ -116,10 +116,14 @@ docker compose down
 ```
 
 ## Create variables and connection
+
 Create the 2 variables:
+
 - **emr_serverless_job_role**: arn for the role created before (example: arn:aws:iam::634541097731:role/emr_serverless)
 - **emr_serverless_log_bucket**: utils bucket name created before (example: utils-bucket-udacity)
+
 Create the AWS connection with the following information:
+
 - Connection Id: aws_default
 - Connection Type: Amazon Web Services
 - AWS Access Key ID: key id from the airflow-user created
