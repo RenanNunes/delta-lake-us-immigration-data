@@ -110,6 +110,10 @@ Otherwise:
 ```
 docker compose up
 ```
+And to stop the docker:
+```
+docker compose down
+```
 
 ## Create variables and connection
 Create the 2 variables:
