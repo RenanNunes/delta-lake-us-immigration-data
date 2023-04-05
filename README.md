@@ -10,8 +10,15 @@ Repository for udacity capstone project. It uses Airflow, Delta Lake, S3 and pyt
 
 ## Design
 ![Architecture design](/images/udacity-nanodegree-architecture.png)
+
 ### Airflow DAG
-![Airflow DAG](/images/airflow-dag.png)
+The DAG was created dividing each layer in task groups, so the high level view is:
+
+![Airflow Task Groups](/images/airflow-task-groups.png)
+
+And looking into every group, we can see all tasks. Basically, for each group, there is a dummy task to indicate the start and to facilitate the visualization, there are some tasks (EmrServerlessStartJobOperator to run PySpark jobs) to create the tables for the layer and a final task to check data quality:
+
+![Airflow DAG](/images/airflow-full-dag.png)
 
 ## S3 Buckets
 - **utils-bucket-udacity**: bucket for spark jars, spark files and execution logs
@@ -82,14 +89,24 @@ Create a policy with the following JSON (or with more restrictive resource list 
 Then create a role with this policy
 
 ## Create user
-Create a user with the same policy and download the Access keys as `credentials-airflow-user.txt` in the format "<id>,<key>"
+Create a user with the same policy and download the Access keys as `credentials-airflow-user.txt` in the format "`<id>,<key>`"
 
 ## Create buckets
 Create the 5 buckets described before and populate the:
 - utils bucket with delta-core jar (example: `delta-core_2.12-2.2.0.jar`), delta storage jar (example: `delta-storage-2.2.0.jar`) inside a `jars` folder, with spark files (that are inside `airflow/dags/spark_files`) inside a `spark_files` folder
-- landing bucket with not zipped files inside `data` and with the zipped content after decompression
+- landing bucket with not zipped files that are inside `data` and with the zipped content after decompression
 
 ## Run docker compose
+For the first run:
+```
+docker compose up airflow-init
+docker compose up --build
+```
+To rebuild image/requirements and run:
+```
+docker compose up --build
+```
+Otherwise:
 ```
 docker compose up
 ```
